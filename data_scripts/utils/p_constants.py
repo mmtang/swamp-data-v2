@@ -114,6 +114,9 @@ portal_resource_ids = {
 # Relative location of RB boundaries layer used for assigning RB value to stations
 rb_boundaries_file = '../../assets/rb_boundaries.geojson'
 
+# Date fields in the tissue dataset that should be imported as the date data type
+tissue_date_cols = ['EarliestDateSampled', 'DigestExtractDate', 'AnalysisDate', 'LatestDateSampled', 'SampleDate', 'CompositeSampleDate', 'HomogonizedDate']
+
 # Today's date in string 'YYYY-MM-DD' format
 today = str(datetime.today()).split(' ')[0]
 
