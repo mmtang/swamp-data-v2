@@ -1,0 +1,13 @@
+# Ignore all folders and files in the data folders except for the .gitkeep file
+ceden_files/*
+!ceden_files/.gitkeep 
+
+export/*
+!export/.gitkeep 
+
+support_files/*
+!support_files/.gitkeep 
+
+# Ignore pycache
+data_scripts/utils/__pycache__
+
