@@ -28,6 +28,6 @@ if __name__ == '__main__':
 
     # Upload file
     # Need to test this line again
-    # cu.upload_chunked_data(p_constants.portal_resource_ids['stations'], file_path, (1024 * 1024 * 64)) # 64MB chunk 
+    cu.upload_chunked_data(p_constants.portal_resource_ids['stations'], file_path, (1024 * 1024 * 64)) # 64MB chunk 
 
     print('%s finished running' % os.path.basename(__file__))

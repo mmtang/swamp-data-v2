@@ -41,6 +41,12 @@ if __name__ == '__main__':
     # Drop data quality column
     data_df.drop('DataQuality', axis=1, inplace=True)
 
+    # Drop FieldQA station code
+    data_df = data_df.drop(data_df[data_df['StationCode'] == 'FIELDQA_SWAMP'].index)
+
+    # Drop stations with null latitude or longitude coordinates
+    data_df = data_df.drop(data_df[(data_df['TargetLatitude'].isna()) | (data_df['TargetLongitude'].isna())].index)
+
     # Sort by sample date descending. We want the most recent date for each station. These values will populate the Last Sample Date field
     data_df.sort_values('SampleDate', ascending=False, inplace=True)
 

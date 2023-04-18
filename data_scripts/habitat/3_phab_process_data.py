@@ -106,6 +106,14 @@ if __name__ == '__main__':
     phab_df.loc[phab_df['Analyte'] == 'CSCI', 'Unit'] = 'score' 
     phab_df.loc[phab_df['Analyte'] == 'IPI', 'Unit'] = 'score'
 
+    # 4/12/23 - Add DisplayText field. This field used to show text in chart tooltips for additional context. Ex. Non-detect. 
+    # Can leave blank if there is no text to show
+    phab_df.loc[phab_df['ResultQualCode'] == 'ND', 'DisplayText'] = 'Non-detect' # If value in ResultQualCode is 'ND', populate DisplayComment field with 'Non-detect'
+    phab_df.loc[phab_df['ResultQualCode'] == 'DNQ', 'DisplayText'] = 'Detected not quantified'
+
+    # If ResultQualCode includes '<' or '>', copy the value over to the DisplayText field
+    phab_df.loc[phab_df['ResultQualCode'].str.contains('<|>'), 'DisplayText'] = phab_df['ResultQualCode']
+
 
     #####  Write data
     phab_file_name = 'swamp_habitat_data'

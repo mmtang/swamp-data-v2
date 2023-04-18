@@ -105,6 +105,14 @@ if __name__ == '__main__':
     wq_df.loc[wq_df['ParentProject'].isin(p_constants.fhab_parent_projects), 'Fhab'] = True
     wq_df.loc[wq_df['ParentProject'].isin(p_constants.spot_parent_projects), 'Spot'] = True
 
+     # 4/12/23 - Add DisplayText field. This field used to show text in chart tooltips for additional context. Ex. Non-detect. 
+    # Can leave blank if there is no text to show
+    wq_df.loc[wq_df['ResultQualCode'] == 'ND', 'DisplayText'] = 'Non-detect' # If value in ResultQualCode is 'ND', populate DisplayComment field with 'Non-detect'
+    wq_df.loc[wq_df['ResultQualCode'] == 'DNQ', 'DisplayText'] = 'Detected not quantified'
+
+    # If ResultQualCode includes '<' or '>', copy the value over to the DisplayText field
+    wq_df.loc[wq_df['ResultQualCode'].str.contains('<|>'), 'DisplayText'] = wq_df['ResultQualCode']
+
     # Rename censored result field to 'ResultDisplay'. This is the field that the app will use to show Result values
     wq_df = wq_df.rename(columns={'Result_Half_MDL': 'ResultDisplay'})
 

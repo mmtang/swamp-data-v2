@@ -33,6 +33,9 @@ if __name__ == '__main__':
     # Filter out matrix with 'blank' (QA)
     tox_df = tox_df.drop(tox_df[tox_df['MatrixName'].str.contains('blank', regex=False)].index)
 
+    # Drop records with null latitude or longitude coordinates
+    tox_df = tox_df.drop(tox_df[(tox_df['TargetLatitude'].isna()) | (tox_df['TargetLongitude'].isna())].index)
+
 
     #####  Process data
     print('--- Processing data')
@@ -97,6 +100,16 @@ if __name__ == '__main__':
     tox_df.loc[tox_df['ParentProject'].isin(p_constants.fhab_parent_projects), 'Fhab'] = True
     tox_df.loc[tox_df['ParentProject'].isin(p_constants.spot_parent_projects), 'Spot'] = True
 
+    # 4/12/23 - Add DisplayText field. This field used to show text in chart tooltips for additional context. Ex. Non-detect. 
+    # Can leave blank if there is no text to show
+    tox_df.loc[tox_df['ResultQualCode'] == 'ND', 'DisplayText'] = 'Non-detect' # If value in ResultQualCode is 'ND', populate DisplayComment field with 'Non-detect'
+    tox_df.loc[tox_df['ResultQualCode'] == 'DNQ', 'DisplayText'] = 'Detected not quantified'
+
+    # If ResultQualCode includes '<' or '>', copy the value over to the DisplayText field
+    tox_df.loc[tox_df['ResultQualCode'].str.contains('<|>'), 'DisplayText'] = tox_df['ResultQualCode']
+
+    # For 15 degree samples
+    tox_df.loc[(tox_df['Treatment'] == 'Temperature') & (tox_df['UnitTreatment'] == 'Deg C') & (tox_df['TreatmentConcentration'] == 15), 'DisplayText'] = 'Test conducted at a non-standard temperature of 15°C'
 
     #####  Write data
     print('--- Exporting data')
