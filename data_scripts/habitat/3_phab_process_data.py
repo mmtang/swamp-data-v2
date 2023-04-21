@@ -50,6 +50,16 @@ if __name__ == '__main__':
     #####  Process data
     print('--- Processing data')
 
+    # Strip special characters
+    phab_df.replace(r'\t',' ', regex=True, inplace=True) # tab
+    phab_df.replace(r'\r',' ', regex=True, inplace=True) # carriage return
+    phab_df.replace(r'\n',' ', regex=True, inplace=True) # newline
+    phab_df.replace(r'\f',' ', regex=True, inplace=True) # formfeed
+    phab_df.replace(r'\v',' ', regex=True, inplace=True) # vertical tab
+    phab_df.replace(r'\|', ' ', regex=True, inplace=True) # pipe
+    phab_df.replace(r'\"', ' ', regex=True, inplace=True) # quotes
+    phab_df.replace(',', '', regex=True, inplace=True) # commas
+
     # Strip whitespace from StationName. See example station: 205PS0365
     phab_df['StationName'] = phab_df['StationName'].apply(lambda x: x.strip())
 

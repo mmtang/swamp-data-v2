@@ -40,6 +40,16 @@ if __name__ == '__main__':
     #####  Process data
     print('--- Processing data')
 
+    # Strip special characters
+    tox_df.replace(r'\t',' ', regex=True, inplace=True) # tab
+    tox_df.replace(r'\r',' ', regex=True, inplace=True) # carriage return
+    tox_df.replace(r'\n',' ', regex=True, inplace=True) # newline
+    tox_df.replace(r'\f',' ', regex=True, inplace=True) # formfeed
+    tox_df.replace(r'\v',' ', regex=True, inplace=True) # vertical tab
+    tox_df.replace(r'\|', ' ', regex=True, inplace=True) # pipe
+    tox_df.replace(r'\"', ' ', regex=True, inplace=True) # quotes
+    tox_df.replace(',', '', regex=True, inplace=True) # commas
+
     # Strip whitespace from StationName
     tox_df['StationName'] = tox_df['StationName'].apply(lambda x: x.strip())
 

@@ -56,6 +56,16 @@ if __name__ == '__main__':
     #####  Process data
     print('--- Processing data')
 
+    # Strip special characters
+    wq_df.replace(r'\t',' ', regex=True, inplace=True) # tab
+    wq_df.replace(r'\r',' ', regex=True, inplace=True) # carriage return
+    wq_df.replace(r'\n',' ', regex=True, inplace=True) # newline
+    wq_df.replace(r'\f',' ', regex=True, inplace=True) # formfeed
+    wq_df.replace(r'\v',' ', regex=True, inplace=True) # vertical tab
+    wq_df.replace(r'\|', ' ', regex=True, inplace=True) # pipe
+    wq_df.replace(r'\"', ' ', regex=True, inplace=True) # quotes
+    wq_df.replace(',', '', regex=True, inplace=True) # commas
+
     # Change date format to standard format (open data portal). This format is required to query date values using the portal API
     wq_df['SampleDate'] = wq_df['SampleDate'].dt.strftime('%Y-%m-%dT%H:%M:%S')
 

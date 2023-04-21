@@ -22,7 +22,7 @@ if __name__ == '__main__':
     files = os.listdir(directory) # Get list of files inside folder
     substring = 'swamp_toxicity_data'
     matched_file = [x for x in files if re.search(substring, x)] # Get the name of the file that matches substring
-    
+
     # Construct file path
     file_path = directory + '/' + matched_file[0]
 
