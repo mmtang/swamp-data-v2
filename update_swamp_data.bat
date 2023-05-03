@@ -45,23 +45,23 @@ python "2_tox_process_data.py"
 
 :: Upload files
 
-:: cd "..\sites"
-:: python "3_sites_upload_portal.py"
+cd "..\sites"
+python "3_sites_upload_portal.py"
 :: Wait 60 seconds
-:: timeout 60 >nul
+timeout 60 >nul
 
-:: cd "..\water_quality"
-:: python "4_wq_upload_portal.py"
+cd "..\water_quality"
+python "4_wq_upload_portal.py"
 :: Wait 60 seconds
-:: timeout 60 >nul
+timeout 60 >nul
 
-:: cd "..\habitat"
-:: python "4_phab_upload_porta.py"
+cd "..\habitat"
+python "4_phab_upload_porta.py"
 :: Wait 60 seconds
-:: timeout 60 >nul
+timeout 60 >nul
 
-:: cd "..\toxicity"
-:: python "3_tox_upload_portal.py"
+cd "..\toxicity"
+python "3_tox_upload_portal.py"
 
 echo Start Time: %startTime%
 echo Finish Time: %time%

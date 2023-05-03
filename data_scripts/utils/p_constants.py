@@ -16,10 +16,12 @@ analyte_list_file = '../../assets/joined_analyte_list_3-21-23.csv'
 
 # ParentProject values identifying what data records belong to which statewide programs
 bioassessment_parent_projects = [
+    'SWAMP California Monitoring and Assessment Program',
     'SWAMP Perennial Stream Surveys',
     'SWAMP Reference Condition Management Plan',
     'Statewide Field Repeat Sampling Study',
     'Statewide Low Gradient Methods Comparison',
+    'SWAMP Repeat Sampling Field Methods Comparison',
     'Statewide Sediment TMDL Study'
 ]
 
