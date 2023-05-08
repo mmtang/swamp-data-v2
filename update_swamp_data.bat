@@ -56,7 +56,7 @@ python "4_wq_upload_portal.py"
 timeout 60 >nul
 
 cd "..\habitat"
-python "4_phab_upload_porta.py"
+python "4_phab_upload_portal.py"
 :: Wait 60 seconds
 timeout 60 >nul
 
