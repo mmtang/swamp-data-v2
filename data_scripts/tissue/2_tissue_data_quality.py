@@ -42,4 +42,8 @@ if __name__ == '__main__':
     outdir = '../../support_files'
     p_utils.write_csv(tissue_dq_df, 'swamp_tissue_data_quality', outdir)
 
+     ##### EXPORT TEST FILE FOR MERCURY #####
+    mercury_df = tissue_dq_df.loc[tissue_df['Analyte'] == 'Mercury']
+    p_utils.write_csv(mercury_df, 'test_tissue_mercury_data', outdir)
+
     print('%s finished running' % os.path.basename(__file__))

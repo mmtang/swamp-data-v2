@@ -15,16 +15,18 @@ if __name__ == '__main__':
     print('Running %s' % os.path.basename(__file__))
 
     print('--- Downloading data from %s' % p_constants.datamart_tables['tissue'])
-    sql_tissue = "SELECT * FROM " + p_constants.datamart_tables['tissue'] + " WHERE (ProgramName = 'Surface Water Ambient Monitoring Program')"
+    sql_tissue = "SELECT TOP 50000 * FROM " + p_constants.datamart_tables['tissue'] + " WHERE (ProgramName = 'Surface Water Ambient Monitoring Program')"
     tissue_df = p_utils.download_data(sql_tissue, p_constants.tissue_date_cols)
+
+    print(tissue_df.head())
 
     # Write data file in support files folder
     outdir = '../../support_files/'
-    p_utils.write_csv(tissue_df, 'ceden_swamp_tissue', outdir)
+    #p_utils.write_csv(tissue_df, 'ceden_swamp_tissue', outdir)
 
     # Write data file in archive folder
     outdir_archive = '../../ceden_files/'
-    p_utils.write_csv(tissue_df, 'ceden_swamp_tissue' + '_' + p_constants.today, outdir_archive + '/' + p_constants.today)
+    #p_utils.write_csv(tissue_df, 'ceden_swamp_tissue' + '_' + p_constants.today, outdir_archive + '/' + p_constants.today)
 
     print('%s finished running' % os.path.basename(__file__))
 
