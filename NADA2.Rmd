@@ -1,0 +1,188 @@
+---
+title: "NADA2 Package Exploration"
+author: "Sydney Rilum"
+date: "2023-07-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(NADA)
+library(NADA2)
+```
+
+
+# About NADA2 Package
+
+For many environmental professionals, the way to deal with “nondetects” is less than obvious. Values below detection or reporting limits result from measuring trace amounts of a variety of organic and inorganic chemicals. 
+
+The NADA/NADA2 package includes methods for plotting, computing summary statistics, hypothesis tests, and regression models for data with one or more detection limits. Most are adaptations of or direct use of existing methods found in survival analysis (such as in the survival package) and in cancer research (such as in the interval package).
+
+# Using NADA2 Functions
+
+See [Practical Stats NADA2 Package Help](https://practicalstats.com/resources/NADA-resources/NADA2-Solutions-to-Exercises-3_7.pdf) for reference.
+
+We need to calculate averages (summary stats) within non-detects present in bioaccumulation/tissue data.
+
+```{r}
+# read in tissue data
+tissue_df = read.csv('./support_files/ceden_swamp_tissue.csv') %>% 
+  slice(1:1000)
+```
+
+```{r}
+# create new column to indicate whether observation/result is censored (TRUE) or not (FALSE)
+tissue_summary <- tissue_df %>% 
+  # create a new column "Censored"
+  mutate(Censored = "", .after = RL) %>% 
+  mutate(Censored = case_when(
+    # For records that are marked non-detect (ND or DNQ), label TRUE (is a non-detect)
+    ResQualCode == 'ND' | ResQualCode == 'DNQ' ~ TRUE,
+    # If those codes do not apply, label FALSE (is not a non-detect)
+    .default = FALSE))
+```
+
+```{r}
+# extract year from SampleDate
+class(tissue_summary$SampleDate) # change to numeric/date
+
+tissue_summary <- tissue_summary %>% 
+  mutate(SampleDate = as.Date(SampleDate)) %>% # format date column
+  mutate(SampleYear = "", .before = ProgramName) %>% # create sample year column
+  mutate(SampleYear = as.numeric(format(SampleDate, "%Y"))) # extract year from date
+```
+
+```{r}
+# change group fields into factor class
+tissue_summary$SampleYear <- as.factor(tissue_summary$SampleYear)
+tissue_summary$StationCode <- as.factor(tissue_summary$StationCode)
+tissue_summary$Analyte <- as.factor(tissue_summary$Analyte)
+tissue_summary$CommonName <- as.factor(tissue_summary$CommonName)
+
+class(tissue_summary$SampleYear)
+```
+
+## censummary() Summary function
+
+In R, the `summary` command is used to briefly describe the characteristics of the data. In 
+the NADA for R package, the `censummary` command fulfills the same role for censored 
+data:
+
+```{r}
+# create/save function entries
+results = tissue_summary$Result # column with observations 
+nondetect = tissue_summary$Censored # column created, labeled TRUE for non-detects, FALSE for rest of data
+group = c(tissue_summary$SampleYear,
+          tissue_summary$StationCode,
+          tissue_summary$CommonName,
+          tissue_summary$Analyte) # how data will be grouped
+
+# use censummary() to view summary stats
+with(tissue_summary, censummary(obs = results, 
+                                censored = nondetect,
+                                groups = group))
+
+## how to get the GROUPS entry working....
+# looks like groups = a factor vector used for grouping 'obs' into subsets, like a categorical variable
+# so I changed class of all group by variables to factor
+```
+
+How to interpret the output of censummary function: [see pdf](https://practicalstats.com/resources/NADA-resources/NADA2-Solutions-to-Exercises-3_7.pdf)
+
+- n = total # of results
+- n.cen = # of non-detects
+- pct.cen = % of results that are non-detects
+
+
+## cenmle() Maximum Likelihood Estimation
+
+The `cenmle` command in the NADA package assumes by default that data follow a 
+lognormal distribution. Other distributions may be specified as options. We will use the lognormal because it was the best-fitting distribution, as seen in the Plotting Data exercise.
+
+```{r}
+# run MLE for Analyte groups
+mle <- cenmle(obs = results,
+              censored = nondetect, 
+              groups = tissue_summary$Analyte)
+mle
+```
+
+Estimate parameters for a lognormal distribution based on type 1 censored data
+```{r}
+mle2 <- elnormAltCensored(results, nondetect,
+                          ci = TRUE,
+                          ci.method = "bootstrap",
+                          n.bootstraps = 5000)
+print(mle2)
+```
+
+
+
+## cenfit() Kaplan-Meier 
+
+The cenfit function in the NADA package has a slightly incorrect detail in its 
+computation of the mean. Here it is, but remember that this issue generally makes the computed mean slightly too high.
+
+```{r}
+km <- cenfit(results, nondetect)
+```
+
+Instead, you should use the EnvStats command `enparCensored` instead for Kaplan-Meier, until this issue in the NADA package is corrected. The EnvStats command uses “npar” for nonparametric to produce the Kaplan-Meier estimates.
+
+
+Estimate the mean, standard deviation, and standard error of the mean nonparametrically given a sample of data from a positive-valued distribution that has been subjected to left- or right-censoring, and optionally construct a confidence interval for the mean.
+```{r}
+km2 <- enparCensored(results, nondetect,
+                     ci = TRUE,
+                     ci.method = "bootstrap",
+                     n.bootstraps = 5000)
+
+print(km2)
+```
+
+
+Note that as with all bootstrap estimates the confidence intervals above will differ slightly from your results.
+
+
+## cboxplot() Plotting Censored/Nondetect Data
+
+'cboxplot' draws boxplots for left-censored data with one ore more detection limit(s). Portions below the maximum detection limit(s) are not shown by default, as their percentiles are not known.
+
+```{r, message=FALSE}
+attach(tissue_summary)
+cboxplot(Result, Censored, Analyte, minmax = TRUE)
+
+cboxplot(Result, Censored, Analyte, LOG = TRUE, minmax = TRUE,
+         show = TRUE) # models the portion of each group's data below the highest detection limit (the lines in gray) using ROS
+```
+
+
+```{r, message=FALSE}
+attach(tissue_summary)
+cboxplot(Result, Censored, CommonName, minmax = TRUE)
+
+cboxplot(Result, Censored, CommonName, LOG = TRUE, minmax = TRUE, show = TRUE)
+```
+
+```{r, message=FALSE}
+attach(tissue_summary)
+cboxplot(Result, Censored, SampleYear, minmax = TRUE)
+
+cboxplot(Result, Censored, SampleYear, LOG = TRUE, minmax = TRUE, show = TRUE)
+```
+
+```{r, message=FALSE}
+attach(tissue_summary)
+cboxplot(Result, Censored, StationCode, minmax = TRUE)
+
+cboxplot(Result, Censored, StationCode, LOG = TRUE, minmax = TRUE, show = TRUE)
+```
+
+
+# NADA2 Package Citation
+
+To cite package 'NADA2' in publications use:
+
+Paul Julian and Dennis Helsel (2021). NADA2: Data Analysis for Censored Environmental Data. R package version 1.0.2. https://github.com/SwampThingPaul/NADA2
