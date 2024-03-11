@@ -1,12 +1,14 @@
 '''
-This script adds the DataQuality and DataQualityIndicator fields to the SWAMP tissue dataset.
+Step 2: This script adds the DataQuality and DataQualityIndicator fields to the SWAMP tissue dataset.
+
+Updated: 02/29/2024 
 '''
 
 import os
 import pandas as pd
 import sys
 
-sys.path.insert(0, '../utils/') # To import module from another folder
+sys.path.insert(0, '../utils/') # Must include this line to import modules from another folder
 import p_constants # p_constants.py
 import p_utils  # p_utils.py
 import p_utils_dq # p_utils_dq.py
@@ -17,14 +19,17 @@ if __name__ == '__main__':
     print('Running %s' % os.path.basename(__file__))
 
     print('--- Importing data')
-    tissue_df = pd.read_csv('../../support_files/ceden_swamp_tissue.csv', parse_dates=p_constants.tissue_date_cols)
+    # Added "na_values" and "keep_default_na" parameters to deal with "AttributeError: 'float' object has no attribute 'split'" error in DQ functions
+    tissue_df = pd.read_csv('../../support_files/ceden_swamp_tissue.csv', parse_dates=p_constants.tissue_date_cols, na_values=p_constants.allowed_nans, keep_default_na=False)
 
-    #####  Process data
-    # The datum field (from the CEDEN stations dataset) is needed to run the data quality estimator
-    station_df = p_utils.import_csv('../../support_files/ceden_stations.csv', fields=['StationCode', 'Datum']) # Import station data with a subset of the fields
-    tissue_df = p_utils.join_datum(tissue_df, station_df) # Join datum and region fields to the df
+    # 10/24/23 - Some dates are not being converted to datetime in the read_csv function for some reason. Force the conversion here
+    tissue_df[p_constants.tissue_date_cols] = tissue_df[p_constants.tissue_date_cols].apply(pd.to_datetime, errors='coerce')
 
-    # Rename columns to match the column names used in the data quality functions
+    # The datum field (from the CEDEN stations table in the CEDEN data mart) is needed to run the data quality estimator. Import the saved dataset and join the values to the dataset here
+    station_df = p_utils.import_csv('../../support_files/ceden_stations.csv', fields=['StationCode', 'Datum']) 
+    tissue_df = p_utils.join_datum(tissue_df, station_df) 
+
+    # Rename columns to match the column names used in the data quality functions. Some of these column names are different even compared to the column names of the other CEDEN tables
     tissue_df = tissue_df.rename(columns={
         'ResQualCode': 'ResultQualCode',
         'Matrix': 'MatrixName',
@@ -41,9 +46,5 @@ if __name__ == '__main__':
     print('--- Exporting data')
     outdir = '../../support_files'
     p_utils.write_csv(tissue_dq_df, 'swamp_tissue_data_quality', outdir)
-
-     ##### EXPORT TEST FILE FOR MERCURY #####
-    mercury_df = tissue_dq_df.loc[tissue_df['Analyte'] == 'Mercury']
-    p_utils.write_csv(mercury_df, 'test_tissue_mercury_data', outdir)
 
     print('%s finished running' % os.path.basename(__file__))

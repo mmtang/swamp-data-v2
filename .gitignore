@@ -8,6 +8,9 @@ export/*
 support_files/*
 !support_files/.gitkeep 
 
+assets/*
+!assets/.gitkeep 
+
 # Ignore pycache
 data_scripts/utils/__pycache__
 

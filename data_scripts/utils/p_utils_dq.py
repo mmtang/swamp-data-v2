@@ -50,7 +50,7 @@ SampleDate_list = {"Jan  1 1950 12:00AM": 0, }
 MatrixName_list = {"blankwater": 0, "Blankwater": 0, "labwater": 0, "blankmatrix": 0, }
 CollectionReplicate_list = {"0": 1, "1": 1, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, }
 ResultsReplicate_list = {"0": 1, "1": 1, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, }
-Datum_list = {"NR": 3, }
+Datum_list = {"NR": 3}
 DQ_Codes = {0: "MetaData", 1: "Passed", 2: "Some review needed", 3: "Spatial accuracy unknown",
             4: "Extensive review needed", 5: "Unknown data quality", 6: "Reject record", 7: 'Error in data'}
 
@@ -244,7 +244,7 @@ def add_data_quality(df):
     def add_Datum(row):
         col = 'Datum'
         val = row[col]
-        if val in ResultsReplicate_list:
+        if val in Datum_list:
             DQ.append({'col': col, 'code': val, 'score': Datum_list[val]})
         
     for index, row in df.iterrows():

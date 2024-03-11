@@ -1,14 +1,16 @@
 '''
-This script uses the CEDEN stations dataset to creates a new dataset of all unique SWAMP monitoring stations in CSV format. It adds a new field: 'LastSampleDate'
+This script uses the CEDEN stations dataset to create a new dataset of all unique SWAMP monitoring stations in CSV format. It adds a new field: 'LastSampleDate'
 
-LastSampleDate = The most recent sample date for the site found by looking through all records from CEDEN
+LastSampleDate = The most recent sample date for the site based on all queried records from CEDEN
+
+Updated: 03/06/2024 
 '''
 
 import os
 import pandas as pd
 import sys
 
-sys.path.insert(0, '../utils/') # Must include this line to import modules from another folder
+sys.path.insert(0, '..\\utils\\')
 import p_constants # p_constants.py
 import p_utils  # p_utils.py
 
@@ -18,28 +20,42 @@ if __name__ == '__main__':
     print('Running %s' % os.path.basename(__file__))
 
     #####  Import data  #####
-    ceden_stations_df = p_utils.import_csv('../../support_files/ceden_stations.csv') # Import CEDEN station data from local file
+    # Import data from previous script
+    ceden_stations_df = p_utils.import_csv('../../support_files/ceden_stations.csv') 
 
-    # Fields needed from CEDEN data files to create new stations dataset
+    # Select the fields needed from the CEDEN data files to create new stations dataset
     import_fields = ['StationCode', 'StationName', 'SampleDate', 'TargetLatitude', 'TargetLongitude', 'DataQuality']
+    import_fields_tissue = ['StationCode', 'StationName', 'LastSampleDate', 'TargetLatitude', 'TargetLongitude']
     date_fields = ['SampleDate']
+    tissue_date_fields = ['LastSampleDate']
 
-    # Add Tissue data when we add the Tissue data type
+    # Import all of the other data types
+    # Important: Add Tissue data when we add the Tissue data type
     print('--- Importing data')
     wq_df = p_utils.import_csv('../../support_files/swamp_wq_data_quality.csv', fields=import_fields, date_cols=date_fields) # Chemistry
     phab_df = p_utils.import_csv('../../support_files/swamp_phab_data_quality.csv', fields=import_fields, date_cols=date_fields) # Habitat
     tox_df = p_utils.import_csv('../../support_files/swamp_tox_data_quality.csv', fields=import_fields, date_cols=date_fields) # Toxicity
+    ##### Add this for tissue
+    #tissue_df = p_utils.import_csv('../../support_files/swamp_tissue_summary_data.csv', fields=import_fields_tissue, date_cols=tissue_date_fields) # Tissue
 
-    # Concatenate all CEDEN dfs
+    ##### Add this for tissue
+    # Rename tissue date field to match other CEDEN df
+    #tissue_df = tissue_df.rename(columns={'LastSampleDate' : 'SampleDate'})
+
+    # Concatenate all CEDEN dfs except Tissue
     data_df = pd.concat([wq_df, phab_df, tox_df], ignore_index=True, sort=True)
 
 
-    #####  Process data  #####
+    #####  Process data 
     # Filter for data quality categories
     data_df = data_df.drop(data_df[~(data_df['DataQuality'].isin(p_constants.dq_categories))].index)
 
     # Drop data quality column
     data_df.drop('DataQuality', axis=1, inplace=True)
+
+    ##### Add this for tissue
+    # Add in the tissue dataset
+    #data_df = pd.concat([data_df, tissue_df], ignore_index=True, sort=True)
 
     # Drop FieldQA station code
     data_df = data_df.drop(data_df[data_df['StationCode'] == 'FIELDQA_SWAMP'].index)
@@ -55,9 +71,9 @@ if __name__ == '__main__':
 
     # Move the date column to the end so that it appears last
     date_col = stations_df.pop('SampleDate')
-    stations_df = pd.concat([stations_df, date_col], 1)
+    stations_df = pd.concat([stations_df, date_col], axis=1)
 
-    # Change date format to standard format (open data portal). This format is required in order to query date values using the portal API
+    # Change date format to the standard format for the open data portal. This format is required in order to query date values using the portal API
     stations_df['SampleDate'] = stations_df['SampleDate'].dt.strftime('%Y-%m-%dT%H:%M:%S')
 
     # Rename "SampleDate" column to "LastSampleDate"
@@ -66,8 +82,8 @@ if __name__ == '__main__':
     # Strip whitespace from StationName. For an example of why this is needed, see station: 205PS0365
     stations_df['StationName'] = stations_df['StationName'].apply(lambda x: x.strip())
 
-
-    #####  Write file  #####
+    
+    #####  Write file
     file_name = 'swamp_stations_without_region'
     outdir = '../../support_files'
 
@@ -75,3 +91,4 @@ if __name__ == '__main__':
     p_utils.write_csv(stations_df, file_name, outdir)
 
     print('%s finished running' % os.path.basename(__file__))
+    
