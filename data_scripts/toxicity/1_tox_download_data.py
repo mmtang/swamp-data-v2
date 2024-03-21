@@ -1,5 +1,5 @@
 '''
-This script downloads SWAMP data from the CEDEN toxicity data mart (replicate data) and saves the data locally. For toxicity data, use the tox replicate data mart and not the tox summary data mart. The summary data mart appears to have some missing data.
+Step 1: This script downloads SWAMP data from the CEDEN toxicity data mart (replicate data) and saves the data locally. For toxicity data, use the tox replicate data mart and not the tox summary data mart. The summary data mart appears to have some missing data.
 
 If running the toxicity data scripts separately from the rest of the data types, run the scripts in sequence from 1 to 3:
 
@@ -7,7 +7,7 @@ If running the toxicity data scripts separately from the rest of the data types,
 --- 2_tox_process_data.py
 --- 3_tox_upload_portal.py
 
-Updated: 03/06/2024 
+Updated: 03/14/2024 
 '''
 
 import os

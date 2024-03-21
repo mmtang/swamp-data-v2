@@ -1,5 +1,5 @@
 '''
-This script downloads data from the CEDEN Stations data mart and saves the data locally. 
+Step 0: This script downloads data from the CEDEN Stations data mart and saves the data locally. 
 By saving the data locally, we won't have to query the data mart multiple times (for each data type).
 This dataset has the 'Datum' field, which is a required field for the data quality assessor.
 
@@ -10,7 +10,7 @@ If running the site data scripts separately from the rest of the data types, run
 --- 2_sites_add_region.py
 --- 3_sites_upload_portal.py
 
-Updated: 03/06/2024 
+Updated: 03/14/2024 
 '''
 
 import os

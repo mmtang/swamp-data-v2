@@ -1,7 +1,9 @@
 '''
 Step 3: This script cleans and processes the SWAMP habitat data before it is uploaded to the open data portal. It filters out some records that do not have valid values and adds some fields (censored data, analyte categories, region, program, etc.) that are used by the web app.  
 
-Updated: 03/05/2024 
+Important: Running this script requires having the "swamp_stations.csv" file saved in the support_files folder. To get this file, run the 3_sites_add_region.py script under the "sites" folder.
+
+Updated: 03/14/2024 
 '''
 
 import numpy as np

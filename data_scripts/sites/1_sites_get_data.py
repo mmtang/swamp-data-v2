@@ -1,9 +1,11 @@
 '''
-This script uses the CEDEN stations dataset to create a new dataset of all unique SWAMP monitoring stations in CSV format. It adds a new field: 'LastSampleDate'
+Step 1: This script uses the CEDEN stations dataset to create a new dataset of all unique SWAMP monitoring stations in CSV format. It adds a new field: 'LastSampleDate'
 
 LastSampleDate = The most recent sample date for the site based on all queried records from CEDEN
 
-Updated: 03/06/2024 
+Important: Running this script draws upon the most recent data files saved for water quality, habitat, toxicity, and tissue data. To ensure that the output reflects the most recent data available, run all of the scripts to produce the exported file outputs named in lines 37-41 *before* running this script.
+
+Updated: 03/14/2024 
 '''
 
 import os

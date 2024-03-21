@@ -1,7 +1,9 @@
 '''
 Step 3: This script further processes the data exported from Step 2 and calculates annual averages for each station/species/analyte/year combination. Individual and composite records are split and processed/analyzed separately before being joined back together into one dataframe
 
-Updated: 02/29/2024 
+Important: Running this script requires having the "swamp_stations.csv" file saved in the support_files folder. To get this file, run the 3_sites_add_region.py script under the "sites" folder.
+
+Updated: 03/14/2024 
 '''
 
 import os

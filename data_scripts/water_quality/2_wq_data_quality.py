@@ -1,11 +1,13 @@
 '''
-This script adds the DataQuality and DataQualityIndicator fields to the SWAMP water quality data.
+Step 2: This script adds the DataQuality and DataQualityIndicator fields to the SWAMP water quality data.
 
 ---DataQuality: Describes the overall quality of the record by taking the QACode, ResultQACode, ComplicanceCode, BatchVerificationCode, and special circumstances into account to assign it to one of the following categories: . The assignments and categories are provisional. A working explanation of the data quality ranking can be found at the following link: https://docs.google.com/spreadsheets/d/1q-tGulvO9jyT2dR9GGROdy89z3W6xulYaci5-ezWAe0/edit?usp=sharing
 
 ---DataQualityIndicator: Explains the reason for the DataQuality value by indicating which quality assurance check the data did not pass (e.g. BatchVerificationCode, ResultQACode, etc.).
 
-Updated: 03/06/2024 
+Important: Running this script requires having the "ceden_stations.csv" file saved in the support_files folder. To get this file, run the 0_get_datum_data.py script under the "sites" folder.
+
+Updated: 03/14/2024 
 '''
 
 import os

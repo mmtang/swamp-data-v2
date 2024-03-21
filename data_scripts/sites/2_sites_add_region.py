@@ -1,7 +1,7 @@
 '''
-This script uses the SWAMP stations dataset and adds a new field: 'Region'. The values in this new field are numeric (1-9) and they refer to the Regional Water Quality Control Board that the station is located in. Geopandas GIS functions are used to find where the point is located relative to the RB boundaries.
+Step 2: This script uses the SWAMP stations dataset and adds a new field: 'Region'. The values in this new field are numeric (1-9) and they refer to the Regional Water Quality Control Board that the station is located in. Geopandas GIS functions are used to find where the point is located relative to the RB boundaries.
 
-Updated: 03/06/2024 
+Updated: 03/14/2024 
 '''
 
 import geopandas as gpd

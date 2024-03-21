@@ -1,7 +1,9 @@
 '''
 Step 2: This script adds the DataQuality and DataQualityIndicator fields to the SWAMP tissue dataset.
 
-Updated: 02/29/2024 
+Important: Running this script requires having the "ceden_stations.csv" file saved in the support_files folder. To get this file, run the 0_get_datum_data.py script under the "sites" folder.
+
+Updated: 03/14/2024 
 '''
 
 import os

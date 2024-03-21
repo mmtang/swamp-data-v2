@@ -1,7 +1,7 @@
 '''
-This script gets the current dated SWAMP toxicity data file (from the export folder) and uploads it to the open data portal. If there is no directory in the export folder with the current date, then the script will not be able to locate the correct file and the script will not run.
+Step 3: This script gets the current dated SWAMP toxicity data file (from the export folder) and uploads it to the open data portal. If there is no directory in the export folder with the current date, then the script will not be able to locate the correct file and the script will not run.
 
-Updated: 03/06/2024 
+Updated: 03/14/2024 
 '''
 
 import os

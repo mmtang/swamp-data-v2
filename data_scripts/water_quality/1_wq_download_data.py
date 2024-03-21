@@ -1,5 +1,5 @@
 '''
-This script downloads SWAMP data from the CEDEN water quality data mart and saves the data locally. 
+Step 1: This script downloads SWAMP data from the CEDEN water quality data mart and saves the data locally. 
 
 If running the water quality data scripts separately from the rest of the data types, run the scripts in sequence from 1 to 4:
 
@@ -8,7 +8,7 @@ If running the water quality data scripts separately from the rest of the data t
 --- 3_wq_process_data.py
 --- 4_wq_upload_portal.py
 
-Updated: 03/06/2024 
+Updated: 03/14/2024 
 '''
 
 import os
